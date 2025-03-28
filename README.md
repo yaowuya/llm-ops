@@ -1,3 +1,9 @@
+# 启动
+
+pycharm启动
+
+![](static/imgs/pycharm-start.png)
+
 # 项目说明
 
 ## 代码目录

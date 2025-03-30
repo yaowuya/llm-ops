@@ -1,8 +1,17 @@
 # 启动
 
-pycharm启动
+### pycharm启动
 
 ![](static/imgs/pycharm-start.png)
+
+### 自动化生成requirements.txt
+
+```python
+pipreqs --ignore venv --force
+```
+
+![](static/imgs/pycharm-pipreqs.png)
+
 
 # 项目说明
 

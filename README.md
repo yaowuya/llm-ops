@@ -12,7 +12,6 @@ pipreqs --ignore venv --force
 
 ![](static/imgs/pycharm-pipreqs.png)
 
-
 # 项目说明
 
 ## 代码目录
@@ -92,3 +91,7 @@ pipreqs --ignore venv --force
 ├---requirements.txt // 第三方包依赖管理
 └---README.md // 项目说明文件
 ```
+
+# 其他
+
+参考学习：https://github.com/lesliechueng1996/llm-ops-api

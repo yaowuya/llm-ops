@@ -5,6 +5,8 @@ from flask import request
 from injector import inject
 from openai import OpenAI
 
+from internal.schema.app_schema import CompletionReq
+
 
 @inject
 @dataclass
@@ -16,6 +18,9 @@ class AppHandler:
 
     def completion(self):
         """聊天接口"""
+        req = CompletionReq()
+        if not req.validate():
+            return req.errors
         query = request.json.get("query")
         client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
         completion = client.chat.completions.create(

@@ -6,6 +6,15 @@
 
 ### 自动化生成requirements.txt
 
+先安装pipres依赖
+
+```
+pip install --no-deps pipreqs
+pip install yarg==0.1.9 docopt==0.6.2
+```
+
+pycharm配置
+
 ```python
 pipreqs --ignore venv --force
 ```

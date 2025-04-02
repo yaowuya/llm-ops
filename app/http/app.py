@@ -1,4 +1,5 @@
 import dotenv
+from dotenv import load_dotenv
 from injector import Injector
 
 from internal.router import Router
@@ -15,4 +16,5 @@ app = Http(
 )
 
 if __name__ == "__main__":
+    load_dotenv()
     app.run(debug=True)

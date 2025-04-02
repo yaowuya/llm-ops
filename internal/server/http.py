@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from internal.exception import CustomException
+from internal.model import App
 from internal.router import Router
 from config import Config
 from pkg.response import json, Response, HttpCode
@@ -25,6 +26,9 @@ class Http(Flask):
         self.config.from_object(config)
         self.register_error_handler(Exception, self._error_handler)
         db.init_app(self)
+        with self.app_context():
+            _ = App()
+            db.create_all()
 
     @staticmethod
     def _error_handler(error: Exception):

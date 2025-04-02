@@ -1,5 +1,16 @@
 # 启动
 
+### 配置文件.env
+
+在根目录下，创建.env文件，存储环境变量
+
+```python
+# Flask基础配置
+FLASK_DEBUG=1
+FLASK_ENV=development
+SQLALCHEMY_DATABASE_URI=postgresql://postgres:root@localhost:5432/llm-ops
+```
+
 ### pycharm启动
 
 ![](static/imgs/pycharm-start.png)

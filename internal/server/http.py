@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
 
 from internal.exception import CustomException
 from internal.router import Router
@@ -14,6 +15,7 @@ class Http(Flask):
             *args,
             router: Router,
             config: Config,
+            db: SQLAlchemy,
             **kwargs,
     ):
         # 1.调用父类构造函数初始化
@@ -22,6 +24,7 @@ class Http(Flask):
         router.register_router(self)
         self.config.from_object(config)
         self.register_error_handler(Exception, self._error_handler)
+        db.init_app(self)
 
     @staticmethod
     def _error_handler(error: Exception):

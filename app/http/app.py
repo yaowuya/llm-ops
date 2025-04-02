@@ -1,6 +1,8 @@
 import dotenv
+from dotenv import load_dotenv
 from injector import Injector
 
+from config import Config
 from internal.router import Router
 from internal.server.http import Http
 
@@ -12,7 +14,8 @@ injector = Injector()
 app = Http(
     __name__,
     router=injector.get(Router),
+    config=Config()
 )
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,host="0.0.0.0", port=5000)

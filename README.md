@@ -1,8 +1,25 @@
 # 启动
 
-pycharm启动
+### pycharm启动
 
 ![](static/imgs/pycharm-start.png)
+
+### 自动化生成requirements.txt
+
+先安装pipres依赖
+
+```
+pip install --no-deps pipreqs
+pip install yarg==0.1.9 docopt==0.6.2
+```
+
+pycharm配置
+
+```python
+pipreqs --ignore venv --force
+```
+
+![](static/imgs/pycharm-pipreqs.png)
 
 # 项目说明
 
@@ -83,3 +100,7 @@ pycharm启动
 ├---requirements.txt // 第三方包依赖管理
 └---README.md // 项目说明文件
 ```
+
+# 其他
+
+参考学习：https://github.com/lesliechueng1996/llm-ops-api

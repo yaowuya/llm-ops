@@ -1,5 +1,6 @@
 Flask==3.1.0
 flask_sqlalchemy==3.1.1
+flask_migrate==4.1.0
 flask_wtf==1.2.2
 injector==0.21.0
 openai==1.70.0
@@ -7,3 +8,4 @@ pytest==8.3.5
 python-dotenv==1.1.0
 SQLAlchemy==2.0.40
 WTForms==3.2.1
+psycopg2==2.9.10

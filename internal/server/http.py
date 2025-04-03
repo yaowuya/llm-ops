@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_migrate import Migrate
 
 from internal.exception import CustomException
 from internal.model import App
@@ -17,6 +18,7 @@ class Http(Flask):
             router: Router,
             config: Config,
             db: SQLAlchemy,
+            migrate: Migrate,
             **kwargs,
     ):
         # 1.调用父类构造函数初始化
@@ -26,9 +28,7 @@ class Http(Flask):
         self.config.from_object(config)
         self.register_error_handler(Exception, self._error_handler)
         db.init_app(self)
-        with self.app_context():
-            _ = App()
-            db.create_all()
+        migrate.init_app(self, db, directory="internal/migration")
 
     @staticmethod
     def _error_handler(error: Exception):

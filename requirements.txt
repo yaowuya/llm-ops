@@ -9,3 +9,7 @@ python-dotenv==1.1.0
 SQLAlchemy==2.0.40
 WTForms==3.2.1
 psycopg2==2.9.10
+langchain_community==0.3.20
+langchain_core==0.3.50
+langchain_openai==0.3.12
+pydantic==2.11.2

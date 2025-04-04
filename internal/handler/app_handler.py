@@ -4,6 +4,9 @@ from uuid import UUID
 
 from flask import request
 from injector import inject
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import ChatOpenAI
 from openai import OpenAI
 
 from internal.exception import FailException
@@ -22,21 +25,20 @@ class AppHandler:
         # return {"ping": "pong"}
         raise FailException(message="异常")
 
-    def completion(self):
+    def debug(self, app_id: UUID):
         """聊天接口"""
         req = CompletionReq()
         if not req.validate():
             return validate_error_json(req.errors)
-        query = request.json.get("query")
-        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        completion = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "你是一个openai开发的聊天机器人,请根据用户的输入回复对应的信息"},
-                {"role": "user", "content": query},
-            ],
-        )
-        content = completion.choices[0].message.content
+        # 2.构建组件
+        prompt = ChatPromptTemplate.from_template("{query}")
+        llm = ChatOpenAI(model="gpt-3.5-turbo-16k")
+        parser = StrOutputParser()
+
+        # 3.构建链
+        chain = prompt | llm | parser
+        # 4.调用链得到结果
+        content = chain.invoke({"query": req.query.data})
         return success_json({"content": content})
 
     def create_app(self):

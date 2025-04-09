@@ -2,12 +2,10 @@ import os
 from dataclasses import dataclass
 from uuid import UUID
 
-from flask import request
 from injector import inject
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
-from openai import OpenAI
 
 from internal.exception import FailException
 from internal.schema.app_schema import CompletionReq

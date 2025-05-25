@@ -112,6 +112,20 @@ pipreqs --ignore venv --force
 └---README.md // 项目说明文件
 ```
 
+## pre-commit
+
+安装pre-commit
+
+```
+pip install pre-commit
+```
+
+安装所有pre-commit钩子中声明的工具
+
+```
+pre-commit install
+```
+
 # 其他
 
 参考学习：https://github.com/lesliechueng1996/llm-ops-api

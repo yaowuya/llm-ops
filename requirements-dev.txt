@@ -21,3 +21,4 @@ langchain_huggingface==0.2.0
 faiss-cpu==1.11.0
 langchain_pinecone==0.2.6
 langchain_weaviate==0.0.4
+pre-commit==4.2.0

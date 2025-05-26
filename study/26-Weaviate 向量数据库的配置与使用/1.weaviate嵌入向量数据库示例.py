@@ -5,13 +5,18 @@
 @Author  : thezehui@gmail.com
 @File    : 1.weaviate嵌入向量数据库示例.py
 """
+import os
+
 import dotenv
 import weaviate
 from langchain_openai import OpenAIEmbeddings
 from langchain_weaviate import WeaviateVectorStore
+from weaviate.auth import Auth
 from weaviate.classes.query import Filter
 
 dotenv.load_dotenv()
+weaviate_url = os.environ["WEAVIATE_URL"]
+weaviate_api_key = os.environ["WEAVIATE_API_KEY"]
 
 # 1.原始文本数据与元数据
 texts = [
@@ -40,11 +45,11 @@ metadatas = [
 ]
 
 # 2.创建连接客户端
-client = weaviate.connect_to_local("192.168.2.120", "8080")
-# client = weaviate.connect_to_wcs(
-#     cluster_url="https://eftofnujtxqcsa0sn272jw.c0.us-west3.gcp.weaviate.cloud",
-#     auth_credentials=AuthApiKey("21pzYy0orl2dxH9xCoZG1O2b0euDeKJNEbB0"),
-# )
+# client = weaviate.connect_to_local("192.168.2.120", "8080")
+client = weaviate.connect_to_weaviate_cloud(
+    cluster_url=weaviate_url,
+    auth_credentials=Auth.api_key(weaviate_api_key),
+)
 embedding = OpenAIEmbeddings(model="text-embedding-3-small")
 
 # 3.创建LangChain向量数据库实例

@@ -20,9 +20,9 @@ exclude =
     __pycache__,
     build,
     dist,
+    *study*,
     *.pyc,
     *.egg-info,
     .cache,
     .eggs,
     *migrations*,
-    study

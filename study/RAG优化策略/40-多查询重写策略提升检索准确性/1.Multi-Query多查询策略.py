@@ -1,0 +1,33 @@
+import os
+
+import dotenv
+import weaviate
+from langchain.retrievers import MultiQueryRetriever
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_weaviate import WeaviateVectorStore
+from weaviate.auth import Auth
+
+dotenv.load_dotenv()
+client = weaviate.connect_to_weaviate_cloud(
+    cluster_url=os.environ["WEAVIATE_URL"],
+    auth_credentials=Auth.api_key(os.environ["WEAVIATE_API_KEY"]),
+)
+# 1.构建向量数据库与检索器
+db = WeaviateVectorStore(
+    client=client,
+    index_name="DatasetDemo",
+    text_key="text",
+    embedding=OpenAIEmbeddings(model="text-embedding-3-small"),
+)
+retriever = db.as_retriever(search_type="mmr")
+# 2.创建多查询检索器
+multi_query_retriever = MultiQueryRetriever.from_llm(
+    retriever=retriever,
+    llm=ChatOpenAI(model="gpt-3.5-turbo-16k", temperature=0),
+    include_original=True,
+)
+
+# 3.执行检索
+docs = multi_query_retriever.invoke("关于LLMOps应用配置的文档有哪些")
+print(docs)
+print(len(docs))

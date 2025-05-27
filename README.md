@@ -126,6 +126,16 @@ pip install pre-commit
 pre-commit install
 ```
 
+# 开发需要的网站
+
+### 调试 LLM 应用程序的平台
+
+https://smith.langchain.com/
+
+### 向量数据库
+
+https://console.weaviate.cloud/
+
 # 其他
 
 参考学习：https://github.com/lesliechueng1996/llm-ops-api

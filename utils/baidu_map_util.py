@@ -3,10 +3,7 @@ import os
 import urllib
 from typing import Dict, Optional
 
-import dotenv
 import requests
-
-dotenv.load_dotenv()
 
 
 class BaiduMapUtil:

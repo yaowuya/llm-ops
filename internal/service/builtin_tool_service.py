@@ -7,8 +7,8 @@ from flask import current_app
 from injector import inject
 from pydantic import BaseModel
 
-from internal.core.tools.builtin_tools.categories.builtin_category_manager import BuiltinCategoryManager
-from internal.core.tools.builtin_tools.providers.builtin_provider_manager import BuiltinProviderManager
+from internal.core.tools.builtin_tools.categories import BuiltinCategoryManager
+from internal.core.tools.builtin_tools.providers import BuiltinProviderManager
 from internal.exception import NotFoundException
 
 

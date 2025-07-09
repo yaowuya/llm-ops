@@ -5,7 +5,7 @@ import yaml
 from injector import inject, singleton
 from pydantic import BaseModel, Field
 
-from internal.core.tools.builtin_tools.entities.provider_entity import Provider, ProviderEntity
+from internal.core.tools.builtin_tools.entities import Provider, ProviderEntity
 
 
 @inject

@@ -139,3 +139,19 @@ https://console.weaviate.cloud/
 # 其他
 
 参考学习：https://github.com/lesliechueng1996/llm-ops-api
+
+# FAQ
+
+### db upgrade 报错
+
+```python
+报错信息：
+psycopg2.errors.UndefinedFunction: 错误:  函数 uuid_generate_v4() 不存在
+LINE 3:  id UUID DEFAULT uuid_generate_v4() NOT NULL,
+                         ^
+HINT:  没有匹配指定名称和参数类型的函数. 您也许需要增加明确的类型转换.
+
+解决方案：
+-- 连接到你的 PostgreSQL 数据库，执行：
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+```

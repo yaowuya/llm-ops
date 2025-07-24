@@ -11,9 +11,10 @@ from internal.core.tools.api_tools.providers import ApiProviderManager
 from internal.exception import NotFoundException, ValidateErrorException
 from internal.model import ApiTool, ApiToolProvider
 from internal.schema.api_tool_schema import CreateApiToolReq, GetApiToolProvidersWithPageReq, UpdateApiToolProviderReq
-from internal.service import BaseService
 from pkg.paginator import Paginator
 from pkg.sqlalchemy import SQLAlchemy
+
+from .base_service import BaseService
 
 
 @inject

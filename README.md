@@ -136,6 +136,22 @@ https://smith.langchain.com/
 
 https://console.weaviate.cloud/
 
+# Pytest使用
+
+通过命令行，执行pytest命令
+
+```python
+# 打开terminal
+pytest # 执行所有test方法
+pytest tests/test_utils.py #运行单个文件
+pytest tests/test_utils.py tests/test_api.py #运行多个文件
+pytest tests/test_utils.py::test_addition # 运行文件中的特定测试函数
+pytest tests/test_api.py::TestUserAPI #运行文件中的特定测试类
+pytest tests/test_api.py::TestUserAPI::test_get_user_profile #运行类中的特定测试方法
+```
+
+
+
 # 其他
 
 参考学习：https://github.com/lesliechueng1996/llm-ops-api

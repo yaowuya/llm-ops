@@ -1,13 +1,15 @@
 import pytest
-from flask.testing import FlaskClient
 
 from pkg.response import HttpCode
 
 
 class TestAppHandler:
-    @pytest.mark.parametrize("query", [None, "你好"])
-    def test_completion(self, client: FlaskClient, query):
-        resp = client.post("/app/completion", json={"query": query})
+    @pytest.mark.parametrize(
+        "app_id, query",
+        [("1232ea07-8045-4452-88f9-9c7e7189e673", None), ("1232ea07-8045-4452-88f9-9c7e7189e673", "你好，你是?")],
+    )
+    def test_completion(self, app_id, query, client):
+        resp = client.post(f"/apps/{app_id}/debug", json={"query": query})
         print(resp.json)
         assert resp.status_code == 200
         if query is None:

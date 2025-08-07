@@ -35,7 +35,7 @@ class TestBuiltinToolHandler:
 
     @pytest.mark.parametrize("provider_name", ["google", "imooc"])
     def test_get_provider_icon(self, provider_name, client):
-        """测试根据提供商名字获取icon接口"""
+        """测试根据提供商名字获取icon接口数据"""
         resp = client.get(f"/builtin-tools/{provider_name}/icon")
         assert resp.status_code == 200
         if provider_name == "imooc":

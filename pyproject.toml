@@ -1,3 +1,55 @@
+[tool.poetry]
+name = "llm-ops"
+version = "0.1.0"
+description = "LLM Operations project"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.14"
+Flask = "3.1.0"
+flask-sqlalchemy = "3.1.1"
+flask-migrate = "4.1.0"
+flask-wtf = "1.2.2"
+flask-cors = "6.0.0"
+pydantic = "2.11.2"
+injector = "0.21.0"
+openai = "1.70.0"
+pytest = "8.3.5"
+python-dotenv = "1.1.0"
+SQLAlchemy = "2.0.40"
+WTForms = "3.2.1"
+psycopg2 = "2.9.10"
+dotenv = "0.9.9"
+langchain = "0.3.22"
+alembic = "1.15.2"
+langchain-community = "0.3.20"
+langchain-core = "0.3.59"
+langchain-openai = "0.3.12"
+
+[tool.poetry.group.dev.dependencies]
+langchain-experimental = "0.3.4"
+langchain-huggingface = "0.2.0"
+langchain-cohere = "0.4.4"
+langgraph = "0.4.7"
+faiss-cpu = "1.11.0"
+langchain-pinecone = "0.2.6"
+langchain-weaviate = "0.0.4"
+pre-commit = "4.2.0"
+aiofiles = "24.1.0"
+unstructured = "0.17.2"
+markdown = "3.8"
+jieba = "0.42.1"
+pandas = "2.2.3"
+umap-learn = "^0.5.0"
+duckduckgo-search = "8.0.2"
+yarg = "^0.1.10"
+docopt = "^0.6.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.black]
 line-length = 120
 include = '\.pyi?$'

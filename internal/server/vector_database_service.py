@@ -1,39 +1,44 @@
 import os
 
-import weaviate
 from injector import inject
+from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 from langchain_core.vectorstores import VectorStoreRetriever
 from langchain_openai import OpenAIEmbeddings
-from langchain_weaviate import WeaviateVectorStore
-from weaviate import WeaviateClient
-from weaviate.auth import Auth
 
 
 @inject
 class VectorDatabaseService:
-    """向量数据库服务"""
+    """向量数据库服务（基于本地FAISS）"""
 
-    client: WeaviateClient
-    vector_store: WeaviateVectorStore
+    vector_store: FAISS
+    _embeddings: OpenAIEmbeddings
+    _index_path: str
 
     def __init__(self):
-        """构造函数，完成向量数据库服务的客户端+LangChain向量数据库实例的创建"""
-        weaviate_url = os.environ["WEAVIATE_URL"]
-        weaviate_api_key = os.environ["WEAVIATE_API_KEY"]
-        # 1.创建/连接weaviate向量数据库
-        self.client = weaviate.connect_to_weaviate_cloud(
-            cluster_url=weaviate_url,
-            auth_credentials=Auth.api_key(weaviate_api_key),
-        )
+        """构造函数，完成FAISS向量数据库实例的创建或加载"""
+        self._embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+        self._index_path = os.environ.get("FAISS_INDEX_PATH", "./storage/faiss_index")
 
-        # 2.创建LangChain向量数据库
-        self.vector_store = WeaviateVectorStore(
-            client=self.client,
-            index_name="Dataset",
-            text_key="text",
-            embedding=OpenAIEmbeddings(model="text-embedding-3-small"),
-        )
+        # 尝试加载已有索引，若不存在则创建空索引
+        if os.path.exists(self._index_path):
+            self.vector_store = FAISS.load_local(
+                self._index_path,
+                self._embeddings,
+                allow_dangerous_deserialization=True,
+            )
+        else:
+            # 创建空的FAISS索引
+            self.vector_store = FAISS.from_texts([""], self._embeddings)
+
+    def add_documents(self, documents: list[Document]) -> None:
+        """添加文档到向量数据库"""
+        self.vector_store.add_documents(documents)
+        self._save_index()
+
+    def _save_index(self) -> None:
+        """保存索引到本地"""
+        self.vector_store.save_local(self._index_path)
 
     def get_retriever(self) -> VectorStoreRetriever:
         """获取检索器"""

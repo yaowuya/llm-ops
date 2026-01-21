@@ -3,6 +3,7 @@ from uuid import UUID
 
 from flask import request
 from injector import inject
+from pydantic import ValidationError
 
 from internal.schema.api_tool_schema import (
     CreateApiToolReq,
@@ -39,9 +40,10 @@ class ApiToolHandler:
 
     def create_api_tool_provider(self):
         """创建自定义API工具"""
-        req = CreateApiToolReq()
-        if not req.validate():
-            return validate_error_json(req.errors)
+        try:
+            req = CreateApiToolReq(**request.json)
+        except ValidationError as e:
+            return validate_error_json(e.errors())
 
         self.api_tool_service.create_api_tool(req)
 
@@ -49,9 +51,10 @@ class ApiToolHandler:
 
     def update_api_tool_provider(self, provider_id: UUID):
         """更新自定义API工具提供者信息"""
-        req = UpdateApiToolProviderReq()
-        if not req.validate():
-            return validate_error_json(req.errors)
+        try:
+            req = UpdateApiToolProviderReq(**request.json)
+        except ValidationError as e:
+            return validate_error_json(e.errors())
 
         self.api_tool_service.update_api_tool_provider(provider_id, req)
 
@@ -80,11 +83,12 @@ class ApiToolHandler:
         return success_message("删除自定义API插件成功")
 
     def validate_openapi_schema(self):
-        """校验传递的openapi_schema字符串是否正确"""
-        req = ValidateOpenAPISchemaReq()
-        if not req.validate():
-            return validate_error_json(req.errors)
+        """校验传递的openapi_schema是否正确"""
+        try:
+            req = ValidateOpenAPISchemaReq(**request.json)
+        except ValidationError as e:
+            return validate_error_json(e.errors())
 
-        self.api_tool_service.parse_openapi_schema(req.openapi_schema.data)
+        self.api_tool_service.parse_openapi_schema(req.openapi_schema)
 
         return success_message("数据校验成功")

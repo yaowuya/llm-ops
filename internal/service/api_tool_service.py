@@ -36,20 +36,20 @@ class ApiToolService(BaseService):
             raise ValidateErrorException("该工具提供者不存在")
 
         # 2.校验openapi_schema数据
-        openapi_schema = self.parse_openapi_schema(req.openapi_schema.data)
+        openapi_schema = self.parse_openapi_schema(req.openapi_schema)
 
         # 3.检测当前账号是否已经创建了同名的工具提供者，如果是则抛出错误
         check_api_tool_provider = (
             self.db.session.query(ApiToolProvider)
             .filter(
                 ApiToolProvider.account_id == account_id,
-                ApiToolProvider.name == req.name.data,
+                ApiToolProvider.name == req.name,
                 ApiToolProvider.id != api_tool_provider.id,
             )
             .one_or_none()
         )
         if check_api_tool_provider:
-            raise ValidateErrorException(f"该工具提供者名字{req.name.data}已存在")
+            raise ValidateErrorException(f"该工具提供者名字{req.name}已存在")
 
         # 4.开启数据库的自动提交
         with self.db.auto_commit():
@@ -62,10 +62,10 @@ class ApiToolService(BaseService):
         # 6.修改工具提供者信息
         self.update(
             api_tool_provider,
-            name=req.name.data,
-            icon=req.icon.data,
-            headers=req.headers.data,
-            openapi_schema=req.openapi_schema.data,
+            name=req.name,
+            icon=str(req.icon),
+            headers=[h.model_dump() for h in req.headers],
+            openapi_schema=json.dumps(req.openapi_schema, ensure_ascii=False),
         )
 
         # 7.新增工具信息从而完成覆盖更新
@@ -87,22 +87,22 @@ class ApiToolService(BaseService):
         # todo:等待授权认证模块完成进行切换调整
         account_id = "46db30d1-3199-4e79-a0cd-abf12fa6858f"
         # 1.检验并提取openapi_schema对应的数据
-        openapi_schema = self.parse_openapi_schema(req.openapi_schema.data)
+        openapi_schema = self.parse_openapi_schema(req.openapi_schema)
         # 2.查询当前登录的账号是否已经创建了同名的工具提供者，如果是则抛出错误
         api_tool_provider = (
-            self.db.session.query(ApiToolProvider).filter_by(account_id=account_id, name=req.name.data).one_or_none()
+            self.db.session.query(ApiToolProvider).filter_by(account_id=account_id, name=req.name).one_or_none()
         )
         if api_tool_provider:
-            raise ValidateErrorException(f"该工具提供者名字{req.name.data}已存在")
+            raise ValidateErrorException(f"该工具提供者名字{req.name}已存在")
         # 3.首先创建工具提供者，并获取工具提供者的id信息，然后在创建工具信息
         api_tool_provider = self.create(
             ApiToolProvider,
             account_id=account_id,
-            name=req.name.data,
-            icon=req.icon.data,
+            name=req.name,
+            icon=str(req.icon),
             description=openapi_schema.description,
-            openapi_schema=req.openapi_schema.data,
-            headers=req.headers.data,
+            openapi_schema=json.dumps(req.openapi_schema, ensure_ascii=False),
+            headers=[h.model_dump() for h in req.headers],
         )
         # 4.创建api工具并关联api_tool_provider
         for path, path_item in openapi_schema.paths.items():
@@ -119,16 +119,12 @@ class ApiToolService(BaseService):
                 )
 
     @classmethod
-    def parse_openapi_schema(cls, openapi_schema_str: str) -> OpenAPISchema:
-        """解析传递的openapi_schema字符串，如果出错则抛出错误"""
-        try:
-            data = json.loads(openapi_schema_str.strip())
-            if not isinstance(data, dict):
-                raise
-        except Exception as e:
-            raise ValidateErrorException(f"传递数据必须符合OpenAPI规范的JSON字符串,{e}")
+    def parse_openapi_schema(cls, openapi_schema_data: dict) -> OpenAPISchema:
+        """解析传递的openapi_schema数据，如果出错则抛出错误"""
+        if not isinstance(openapi_schema_data, dict):
+            raise ValidateErrorException("传递数据必须符合OpenAPI规范的JSON对象")
 
-        return OpenAPISchema(**data)
+        return OpenAPISchema(**openapi_schema_data)
 
     def get_api_tool_providers_with_page(self, req: GetApiToolProvidersWithPageReq) -> tuple[list[Any], Paginator]:
         """获取自定义API工具服务提供者分页列表数据"""

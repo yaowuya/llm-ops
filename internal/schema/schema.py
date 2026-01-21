@@ -7,8 +7,29 @@ class ListField(Field):
     data: list = None
 
     def process_formdata(self, valuelist):
+        # Flask-WTF JSON 模式下，valuelist 直接就是对应的值
         if valuelist is not None and isinstance(valuelist, list):
             self.data = valuelist
+        # 兼容列表包装的情况
+        elif valuelist and len(valuelist) > 0 and isinstance(valuelist[0], list):
+            self.data = valuelist[0]
 
     def _value(self):
         return self.data if self.data else []
+
+
+class DictField(Field):
+    """自定义dict字段，用于存储字典型数据"""
+
+    data: dict = None
+
+    def process_formdata(self, valuelist):
+        # Flask-WTF JSON 模式下，valuelist 直接就是对应的值
+        if valuelist is not None and isinstance(valuelist, dict):
+            self.data = valuelist
+        # 兼容列表包装的情况
+        elif valuelist and len(valuelist) > 0 and isinstance(valuelist[0], dict):
+            self.data = valuelist[0]
+
+    def _value(self):
+        return self.data if self.data else {}

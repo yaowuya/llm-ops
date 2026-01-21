@@ -1,79 +1,61 @@
-from flask_wtf import FlaskForm
 from marshmallow import Schema, fields, pre_dump
+from pydantic import BaseModel, Field, HttpUrl, field_validator
 from wtforms import StringField
-from wtforms.validators import URL, DataRequired, Length, Optional
+from wtforms.validators import Optional
 
 from internal.model import ApiTool, ApiToolProvider
-from internal.schema.schema import ListField
 from pkg.paginator.paginator import PaginatorReq
 
 
-class ValidateOpenAPISchemaReq(FlaskForm):
-    """校验OpenAPI规范字符串请求"""
+class HeaderItem(BaseModel):
+    """请求头项"""
 
-    openapi_schema = StringField(
-        "openapi_schema",
-        validators=[
-            DataRequired(message="openapi_schema字符串不能为空"),
-        ],
-    )
+    key: str
+    value: str
+
+
+class ValidateOpenAPISchemaReq(BaseModel):
+    """校验OpenAPI规范请求"""
+
+    openapi_schema: dict
+
+
+class CreateApiToolReq(BaseModel):
+    """创建自定义API工具请求"""
+
+    name: str = Field(..., min_length=1, max_length=30, description="工具提供者名字")
+    icon: HttpUrl = Field(..., description="工具提供者的图标URL")
+    openapi_schema: dict = Field(..., description="OpenAPI规范的JSON对象")
+    headers: list[HeaderItem] = Field(default=[], description="请求头列表")
+
+    @field_validator("name", mode="before")
+    @classmethod
+    def validate_name(cls, v):
+        if not v or not v.strip():
+            raise ValueError("工具提供者名字不能为空")
+        return v.strip()
+
+
+class UpdateApiToolProviderReq(BaseModel):
+    """更新API工具提供者请求"""
+
+    name: str = Field(..., min_length=1, max_length=30, description="工具提供者名字")
+    icon: HttpUrl = Field(..., description="工具提供者的图标URL")
+    openapi_schema: dict = Field(..., description="OpenAPI规范的JSON对象")
+    headers: list[HeaderItem] = Field(default=[], description="请求头列表")
+
+    @field_validator("name", mode="before")
+    @classmethod
+    def validate_name(cls, v):
+        if not v or not v.strip():
+            raise ValueError("工具提供者名字不能为空")
+        return v.strip()
 
 
 class GetApiToolProvidersWithPageReq(PaginatorReq):
     """获取API工具提供者分页列表请求"""
 
     search_word = StringField("search_word", validators=[Optional()])
-
-
-class CreateApiToolReq(FlaskForm):
-    """创建自定义API工具请求"""
-
-    name = StringField(
-        "name",
-        validators=[
-            DataRequired(message="工具提供者名字不能为空"),
-            Length(min=1, max=30, message="工具提供者的名字长度在1-30"),
-        ],
-    )
-    icon = StringField(
-        "icon",
-        validators=[
-            DataRequired(message="工具提供者的图标不能为空"),
-            URL(message="工具提供者的图标必须是URL链接"),
-        ],
-    )
-    openapi_schema = StringField("openapi_schema", validators=[DataRequired(message="openapi_schema字符串不能为空")])
-    headers = ListField("headers", default=[])
-
-
-class UpdateApiToolProviderReq(FlaskForm):
-    """更新API工具提供者请求"""
-
-    name = StringField(
-        "name",
-        validators=[
-            DataRequired(message="工具提供者名字不能为空"),
-            Length(min=1, max=30, message="工具提供者的名字长度在1-30"),
-        ],
-    )
-    icon = StringField(
-        "icon",
-        validators=[
-            DataRequired(message="工具提供者的图标不能为空"),
-            URL(message="工具提供者的图标必须是URL链接"),
-        ],
-    )
-    openapi_schema = StringField("openapi_schema", validators=[DataRequired(message="openapi_schema字符串不能为空")])
-    headers = ListField("headers", default=[])
-
-    @classmethod
-    def validate_headers(cls, form, field):
-        """校验headers请求的数据是否正确，涵盖列表校验，列表元素校验"""
-        for header in field.data:
-            if not isinstance(header, dict):
-                raise ValueError("headers中的每个元素必须是字典")
-            if set(header.keys()) != {"key", "value"}:
-                raise ValueError("headers里的每一个元素都必须包含key/value两个属性，不允许有其他属性")
 
 
 class GetApiToolProviderResp(Schema):
